@@ -1,0 +1,8 @@
+numpy==2.5.3
+openai==2.54.0
+httpx[socks]==0.28.1
+opencv-python==4.14.0.94
+Pillow==12.3.0
+av==17.1.0
+
+

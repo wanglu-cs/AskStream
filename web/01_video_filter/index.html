@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Video Filter</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">
+        <h1>Video Filter</h1>
+        <p id="datasetSummary">Loading data...</p>
+    </div>
+    <div class="actions">
+        <span id="saveState" class="saveState" role="status" aria-live="polite" data-state="loading">Loading</span>
+        <button id="importButton" class="secondary" type="button">Import</button>
+        <input id="importFile" type="file" accept=".json,.txt,application/json,text/plain" hidden>
+        <button id="exportTxtButton" class="secondary" type="button">Export TXT</button>
+        <button id="exportJsonButton" class="secondary" type="button">Export JSON</button>
+        <button id="copyButton" class="secondary" type="button">Copy video IDs</button>
+        <strong class="reviewerName">Human_Review</strong>
+        <button id="saveButton" class="primary" type="button">Save</button>
+    </div>
+</header>
+<main class="layout">
+    <section class="videoPane">
+        <div class="videoShell"><iframe id="youtubeFrame" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <div class="videoFooter">
+            <div><span class="eyebrow">Video ID</span><strong id="videoKey">-</strong></div>
+            <a id="openYoutube" href="#" target="_blank" rel="noreferrer">Open YouTube</a>
+        </div>
+    </section>
+    <aside class="reviewPane">
+        <div class="toolbar">
+            <button id="prevButton" class="navButton" type="button">Back</button>
+            <div id="positionText">0 / 0</div>
+            <button id="nextButton" class="navButton" type="button">Next</button>
+        </div>
+        <div class="filters">
+            <button class="filter active" data-filter="all">All</button>
+            <button class="filter" data-filter="pending">Pending</button>
+            <button class="filter" data-filter="accepted">Accepted</button>
+            <button class="filter" data-filter="rejected">Rejected</button>
+        </div>
+        <input id="searchBox" class="searchBox" type="search" placeholder="Search ID / title / channel / keywords" aria-label="Search videos">
+        <section class="infoPanel">
+            <div class="infoHeader">
+                <div><span class="eyebrow">Video title</span><h2 id="videoTitle">-</h2></div>
+                <span id="statusBadge" class="badge pending">Pending</span>
+            </div>
+            <dl class="metaGrid">
+                <div><dt>Channel</dt><dd id="channelName">-</dd></div>
+                <div><dt>Duration</dt><dd id="durationText">-</dd></div>
+                <div><dt>Views</dt><dd id="viewCount">-</dd></div>
+                <div><dt>Published</dt><dd id="publishedAt">-</dd></div>
+            </dl>
+        </section>
+        <section class="criteriaPanel">
+            <div class="criteriaHeader">
+                <h2>Filtering criteria</h2>
+                <button id="addCriterionButton" class="secondary criterionButton" type="button" title="Add criterion" aria-label="Add criterion">+</button>
+            </div>
+            <div id="criteriaList"></div>
+        </section>
+        <section class="segmentsPanel">
+            <h2>Search information</h2>
+            <div class="detailBlock"><span class="eyebrow">Matched keywords</span><div id="matchedKeywords" class="keywordList"></div></div>
+            <div class="detailBlock"><span class="eyebrow">Description</span><p id="descriptionText" class="descriptionText">-</p></div>
+        </section>
+        <div class="decisionBar">
+            <button id="rejectButton" class="danger" type="button">Reject</button>
+            <button id="acceptButton" class="primary" type="button" disabled>Accept</button>
+        </div>
+    </aside>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="./app.js"></script>
+</body>
+</html>

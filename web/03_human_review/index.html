@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Human Review</title>
+    <link rel="stylesheet" href="./styles.css?v=80-nav2-20260731">
+</head>
+<body>
+    <header class="appHeader">
+        <div class="brand">
+            <span class="brandMark">AS</span>
+            <div>
+                <h1>Synchronized Video Review</h1>
+                <p id="datasetSummary">Loading annotation data</p>
+            </div>
+        </div>
+        <div class="headerActions">
+            <span id="saveState" class="saveState" data-state="loading">Loading</span>
+            <button id="importAssetsButton" class="button secondary" type="button">Import Video Manifest</button>
+            <button id="saveButton" class="button primary" type="button">Save Now</button>
+            <strong class="reviewerName">Human_Review</strong>
+            <input id="assetsFile" type="file" accept="application/json" hidden>
+        </div>
+    </header>
+
+    <nav class="recordNavigator" aria-label="Review record navigation">
+        <label class="videoSelectField">
+            <span>Video</span>
+            <span class="videoSelectControl">
+                <button id="previousVideoButton" class="iconButton" type="button" title="Previous video" aria-label="Previous video">&#8592;</button>
+                <select id="videoSelect"></select>
+                <button id="nextVideoButton" class="iconButton" type="button" title="Next video" aria-label="Next video">&#8594;</button>
+            </span>
+        </label>
+        <label class="eventSelectField">
+            <span>Event</span>
+            <select id="eventSelect"></select>
+        </label>
+        <div class="navButtons">
+            <button id="previousEventButton" class="iconButton" type="button" title="Previous event" aria-label="Previous event">←</button>
+            <span id="eventPosition">0 / 0</span>
+            <button id="nextEventButton" class="iconButton" type="button" title="Next event" aria-label="Next event">→</button>
+        </div>
+    </nav>
+
+    <main class="workspace">
+        <section class="comparisonWorkspace" aria-label="Synchronized video comparison">
+            <div class="videoPane">
+                <div class="paneHeader">
+                    <div><span>MASKED</span><strong>All Candidate Entities Masked</strong></div>
+                    <span id="maskedSourceState" class="sourceState">Not Configured</span>
+                </div>
+                <div class="videoStage">
+                    <video id="maskedVideo" preload="metadata" playsinline></video>
+                    <div id="maskedMissing" class="missingMedia">Masked video source is not configured</div>
+                </div>
+            </div>
+
+            <div class="videoPane">
+                <div class="paneHeader">
+                    <div><span>REVEALED</span><strong>Correct Entity Revealed</strong></div>
+                    <span id="revealedSourceState" class="sourceState">Not Configured</span>
+                </div>
+                <div class="videoStage">
+                    <video id="revealedVideo" preload="metadata" playsinline></video>
+                    <div id="revealedMissing" class="missingMedia">Revealed video source is not configured</div>
+                </div>
+            </div>
+
+            <div class="syncToolbar" aria-label="Synchronized playback controls">
+                <button id="playButton" class="iconButton playButton" type="button" title="Play or pause both videos" aria-label="Play or pause both videos">▶</button>
+                <button id="previousFrameButton" class="iconButton" type="button" title="Previous frame" aria-label="Previous frame">|←</button>
+                <button id="nextFrameButton" class="iconButton" type="button" title="Next frame" aria-label="Next frame">→|</button>
+                <span id="timeText" class="timeText">00:00.000 / 00:00.000</span>
+                <input id="scrubber" type="range" min="0" max="1" step="0.001" value="0" aria-label="Video time">
+                <select id="playbackRate" aria-label="Playback speed">
+                    <option value="0.5">0.5x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                </select>
+                <button id="jumpEventButton" class="button secondary compact" type="button">Event Start</button>
+                <button id="jumpAskingButton" class="button secondary compact" type="button">Asking Start</button>
+                <span id="syncState" class="syncState">Sync Ready</span>
+            </div>
+        </section>
+
+        <aside class="optionInspector">
+            <div class="inspectorHeader">
+                <div>
+                    <span class="eyebrow">CURRENT EVENT</span>
+                    <h2 id="eventTitle">-</h2>
+                    <p class="videoIdLine"><span>YouTube Video ID</span><code id="youtubeVideoId">-</code></p>
+                </div>
+                <span id="eventStatus" class="eventStatus">-</span>
+            </div>
+
+            <section class="questionSection">
+                <span class="fieldLabel">Question</span>
+                <p id="questionText">-</p>
+            </section>
+
+            <section>
+                <div class="sectionHeader">
+                    <div><span class="eyebrow">GOLD ENTITIES</span><h3>Correct Entities</h3></div>
+                </div>
+                <div id="goldEntityList" class="entityChips"></div>
+            </section>
+
+            <section>
+                <div class="sectionHeader">
+                    <div><span class="eyebrow">MODEL ACTIONS</span><h3>Action Options</h3></div>
+                    <button id="addActionButton" class="button secondary compact" type="button">+ Option</button>
+                </div>
+                <div id="actionOptionList" class="optionList"></div>
+            </section>
+
+            <section>
+                <div class="sectionHeader">
+                    <div><span class="eyebrow">FINAL ANSWERS</span><h3>Answer Options</h3></div>
+                    <button id="addAnswerButton" class="button secondary compact" type="button">+ Option</button>
+                </div>
+                <div id="answerOptionList" class="optionList"></div>
+            </section>
+
+            <div id="validationMessage" class="validationMessage" hidden></div>
+        </aside>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js?v=80-scrub-20260731"></script>
+</body>
+</html>

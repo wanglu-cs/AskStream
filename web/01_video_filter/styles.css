@@ -1,0 +1,601 @@
+:root {
+    --bg: #f5f7fa;
+    --panel: #ffffff;
+    --text: #18202b;
+    --muted: #667085;
+    --line: #d8dee8;
+    --accent: #176b87;
+    --accent-strong: #0f4e63;
+    --ok: #237a57;
+    --warn: #9a6a13;
+    --bad: #b42318;
+    --shadow: 0 12px 36px rgba(17, 24, 39, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background: var(--bg);
+    font-family: Arial, "Microsoft YaHei", sans-serif;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+}
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+}
+
+.brand h1,
+.infoHeader h2,
+.criteriaPanel h2,
+.sectionTitle h2 {
+    margin: 0;
+}
+
+.brand h1 {
+    font-size: 22px;
+    line-height: 1.2;
+}
+
+.brand p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.reviewerName {
+    margin-left: 8px;
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(520px, 1fr) 460px;
+    gap: 18px;
+    padding: 18px 24px 24px;
+}
+
+.videoPane,
+.reviewPane {
+    min-width: 0;
+}
+
+.videoPane {
+    position: sticky;
+    top: 86px;
+    align-self: start;
+}
+
+.videoShell {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #101828;
+    border: 1px solid #202939;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.videoShell iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.videoFooter {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.videoFooter strong {
+    display: block;
+    margin-top: 4px;
+    word-break: break-all;
+}
+
+.videoFooter a {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.reviewPane {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toolbar,
+.infoPanel,
+.criteriaPanel,
+.segmentsPanel,
+.decisionBar {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(17, 24, 39, 0.04);
+}
+
+.toolbar {
+    display: grid;
+    grid-template-columns: 56px 1fr 56px;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+}
+
+.navButton {
+    width: 56px;
+    height: 44px;
+    border-radius: 8px;
+    color: var(--text);
+    background: #edf2f7;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.progressBlock {
+    min-width: 0;
+}
+
+#positionText {
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-weight: 700;
+    text-align: center;
+}
+
+.progressSlider {
+    width: 100%;
+    height: 24px;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.filter {
+    min-height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--muted);
+    background: var(--panel);
+    font-weight: 700;
+}
+
+.filter.active {
+    color: #ffffff;
+    border-color: var(--accent);
+    background: var(--accent);
+}
+
+.searchBox {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--text);
+}
+
+.infoPanel,
+.criteriaPanel,
+.segmentsPanel {
+    padding: 16px;
+}
+
+.infoHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.infoHeader h2 {
+    margin-top: 3px;
+    font-size: 20px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.eyebrow {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.badge {
+    flex: 0 0 auto;
+    min-width: 72px;
+    padding: 6px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.badge.pending {
+    color: var(--warn);
+    background: #fff4d6;
+}
+
+.badge.accepted {
+    color: var(--ok);
+    background: #dff7ea;
+}
+
+.badge.rejected {
+    color: var(--bad);
+    background: #ffe4e0;
+}
+
+.metaGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0;
+}
+
+.metaGrid div {
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #f9fbfd;
+}
+
+.metaGrid dt {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.metaGrid dd {
+    margin: 4px 0 0;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.criteriaPanel h2,
+.sectionTitle h2 {
+    font-size: 16px;
+}
+
+.checkRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #f9fbfd;
+    font-weight: 800;
+}
+
+.checkRow input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
+.criteriaHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.criterionButton {
+    min-width: 36px;
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 22px;
+}
+
+.criterionRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.criterionRow .checkRow {
+    flex: 1;
+    min-width: 0;
+    margin-top: 0;
+}
+
+.criterionRow .checkRow input {
+    flex-shrink: 0;
+}
+
+.criterionRow .checkRow span {
+    overflow-wrap: anywhere;
+}
+
+.removeCriterionButton {
+    flex-shrink: 0;
+    width: 30px;
+    height: 34px;
+    border-radius: 6px;
+    color: var(--bad);
+    background: #ffe4e0;
+    font-size: 22px;
+}
+
+.saveState {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    gap: 6px;
+    padding: 0 9px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    color: var(--muted);
+    background: #f9fbfd;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.saveState::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    content: "";
+}
+
+.saveState[data-state="saved"]::before {
+    background: var(--ok);
+}
+
+.saveState[data-state="dirty"]::before {
+    background: var(--warn);
+}
+
+.saveState[data-state="error"]::before {
+    background: var(--bad);
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#segmentRangeHint {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.segmentsList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: calc(100vh - 560px);
+    min-height: 160px;
+    overflow: auto;
+    padding-right: 3px;
+}
+
+.detailBlock + .detailBlock {
+    margin-top: 16px;
+}
+
+.keywordList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.keywordTag {
+    padding: 5px 8px;
+    border: 1px solid #b8d4df;
+    border-radius: 6px;
+    color: var(--accent-strong);
+    background: #eef8fb;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.descriptionText {
+    max-height: 180px;
+    margin: 8px 0 0;
+    overflow: auto;
+    color: var(--text);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.mutedText {
+    color: var(--muted);
+}
+
+.segmentItem {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.segmentTime {
+    color: var(--accent-strong);
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.35;
+}
+
+.segmentLabel {
+    min-width: 0;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.decisionBar {
+    position: sticky;
+    bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 12px;
+}
+
+.primary,
+.secondary,
+.danger {
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-weight: 800;
+}
+
+.primary {
+    color: #ffffff;
+    background: var(--accent);
+}
+
+.primary:hover {
+    background: var(--accent-strong);
+}
+
+.secondary {
+    color: var(--accent-strong);
+    border: 1px solid #b8d4df;
+    background: #eef8fb;
+}
+
+.danger {
+    color: #ffffff;
+    background: var(--bad);
+}
+
+.toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 40;
+    max-width: 360px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    color: #ffffff;
+    background: #1d2939;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 1050px) {
+    .topbar {
+        position: static;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .layout {
+        grid-template-columns: 1fr;
+        padding: 14px;
+    }
+
+    .videoPane {
+        position: static;
+    }
+
+    .segmentsList {
+        max-height: none;
+    }
+}
+
+@media (max-width: 620px) {
+    .actions,
+    .filters,
+    .metaGrid,
+    .decisionBar {
+        grid-template-columns: 1fr;
+    }
+
+    .actions .saveState {
+        width: 100%;
+    }
+
+    .actions,
+    .filters {
+        display: grid;
+        width: 100%;
+    }
+
+    .segmentItem {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>ASK-Stream Video Annoation</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <header class="appHeader">
+        <div class="brandBlock">
+            <div class="productMark" aria-hidden="true">AS</div>
+            <div>
+                <h1>Video Annoation</h1>
+                <p id="datasetSummary">Loading tracked videos...</p>
+            </div>
+        </div>
+        <div class="headerActions">
+            <span id="saveState" class="saveState" data-state="loading">Loading</span>
+            <button id="importButton" class="button secondary" type="button">Import</button>
+            <button id="exportButton" class="button secondary" type="button">Export Dataset</button>
+            <button id="saveButton" class="button primary" type="button">Save</button>
+            <strong class="reviewerName">Human_Review</strong>
+            <input id="importFile" type="file" accept="application/json" hidden>
+        </div>
+    </header>
+
+    <main class="appLayout">
+        <aside class="videoNavigator" aria-label="Video navigation">
+            <div class="navigatorHeader">
+                <div>
+                    <span class="sectionEyebrow">Dataset</span>
+                    <strong>COIN · tracked videos</strong>
+                </div>
+                <span id="completeCounter" class="countBadge">0 / 0</span>
+            </div>
+            <div class="progressMeter" aria-hidden="true">
+                <span id="progressMeterFill"></span>
+            </div>
+            <input id="videoSearch" class="searchInput" type="search" placeholder="Search by ID, class, or domain">
+            <div class="statusFilters" role="tablist" aria-label="Video status">
+                <button class="statusFilter active" type="button" data-filter="all">All</button>
+                <button class="statusFilter" type="button" data-filter="draft">In Progress</button>
+                <button class="statusFilter" type="button" data-filter="complete">Complete</button>
+            </div>
+            <div id="videoList" class="videoList" aria-label="Video list"></div>
+        </aside>
+
+        <section class="videoWorkspace">
+            <div class="videoHeading">
+                <div class="videoIdentity">
+                    <span id="videoOrdinal" class="sectionEyebrow">Video 0 / 0</span>
+                    <h2 id="videoTitle">-</h2>
+                    <p id="videoSubtitle">-</p>
+                </div>
+                <div class="videoNavActions">
+                    <button id="previousVideoButton" class="iconButton" type="button" title="Previous video" aria-label="Previous video">←</button>
+                    <button id="nextVideoButton" class="iconButton" type="button" title="Next video" aria-label="Next video">→</button>
+                    <button id="completeButton" class="button completeButton" type="button">Mark Complete</button>
+                </div>
+            </div>
+
+            <div id="videoStage" class="videoStage">
+                <video id="videoPlayer" preload="metadata" playsinline></video>
+                <canvas id="drawCanvas" aria-label="Video region annotation canvas"></canvas>
+                <div id="videoLoading" class="videoLoading">Loading video</div>
+                <div id="videoError" class="videoError" hidden>
+                    <strong>Unable to play video</strong>
+                    <span id="videoErrorText"></span>
+                </div>
+            </div>
+
+            <div class="transport" aria-label="Playback controls">
+                <button id="playButton" class="iconButton transportMain" type="button" title="Play or pause" aria-label="Play or pause">▶</button>
+                <button id="previousFrameButton" class="iconButton" type="button" title="Previous frame" aria-label="Previous frame">|←</button>
+                <button id="nextFrameButton" class="iconButton" type="button" title="Next frame" aria-label="Next frame">→|</button>
+                <div class="timeDisplay">
+                    <strong id="currentTimeText">00:00.000</strong>
+                    <span id="frameText">Frame 0</span>
+                </div>
+                <input id="fineScrubber" class="fineScrubber" type="range" min="0" max="1" value="0" step="0.001" aria-label="Fine video frame scrubber">
+                <select id="playbackRate" class="compactSelect" aria-label="Playback speed">
+                    <option value="0.25">0.25x</option>
+                    <option value="0.5">0.5x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                </select>
+            </div>
+
+            <section class="timelineSection" aria-label="Event timeline">
+                <div class="timelineHeader">
+                    <div>
+                        <span class="sectionEyebrow">Segments</span>
+                        <strong id="timelineTitle">Event Timeline</strong>
+                    </div>
+                    <div class="timelineActions">
+                        <button id="zoomOutButton" class="iconButton small" type="button" title="Zoom out timeline" aria-label="Zoom out timeline">−</button>
+                        <span id="zoomText">100%</span>
+                        <button id="zoomInButton" class="iconButton small" type="button" title="Zoom in timeline" aria-label="Zoom in timeline">+</button>
+                    </div>
+                </div>
+                <div id="timelineViewport" class="timelineViewport">
+                    <div id="timeline" class="timeline" role="slider" tabindex="0" aria-label="Video event timeline" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+                        <div id="timelineTicks" class="timelineTicks"></div>
+                        <div id="segmentTrack" class="segmentTrack"></div>
+                        <div id="windowTrack" class="windowTrack"></div>
+                        <div id="timelinePlayhead" class="timelinePlayhead"><span></span></div>
+                    </div>
+                </div>
+                <div id="segmentLabels" class="segmentLabels"></div>
+            </section>
+
+            <section class="drawingToolbar" aria-label="Visual prompt annotation tools">
+                <div class="drawTools" role="toolbar" aria-label="Drawing mode">
+                    <button class="toolButton active" type="button" data-tool="select" title="Select annotation"><span aria-hidden="true">↖</span> Select</button>
+                    <button class="toolButton" type="button" data-tool="box" title="Draw bounding box"><span aria-hidden="true">□</span> Box</button>
+                    <button class="toolButton" type="button" data-tool="polygon" title="Draw irregular polygon"><span aria-hidden="true">⬡</span> Polygon</button>
+                    <button id="undoPolygonPointButton" class="iconButton" type="button" title="Undo last vertex" aria-label="Undo last vertex" disabled>↶</button>
+                    <button id="deletePolygonPointButton" class="iconButton dangerIcon" type="button" title="Delete selected polygon vertex" aria-label="Delete selected polygon vertex" disabled>⌫</button>
+                    <button id="finishPolygonButton" class="iconButton" type="button" title="Finish polygon" aria-label="Finish polygon" disabled>✓</button>
+                    <button id="cancelDrawingButton" class="iconButton" type="button" title="Cancel draft or delete selected annotation" aria-label="Cancel draft or delete selected annotation">×</button>
+                </div>
+                <label class="entityPicker">
+                    <span>Active Entity</span>
+                    <select id="activeEntitySelect"></select>
+                </label>
+                <button id="quickAddEntityButton" class="button secondary" type="button"><span aria-hidden="true">+</span> Entity</button>
+                <div class="promptFrameMeta">
+                    <span>Current Frame Prompts</span>
+                    <strong id="currentFramePromptCount">0</strong>
+                </div>
+            </section>
+        </section>
+
+        <aside class="inspector">
+            <div class="inspectorTabs" role="tablist" aria-label="Annotation panel">
+                <button class="inspectorTab active" type="button" data-panel="segment" role="tab">Events</button>
+                <button class="inspectorTab" type="button" data-panel="entities" role="tab">Entities <span id="entityTabCount">0</span></button>
+                <button class="inspectorTab" type="button" data-panel="prompts" role="tab">Keyframes <span id="promptTabCount">0</span></button>
+                <button class="inspectorTab" type="button" data-panel="review" role="tab">Review</button>
+            </div>
+
+            <div id="segmentPanel" class="inspectorPanel active" data-panel-content="segment">
+                <div class="panelTitleRow">
+                    <div>
+                        <span class="sectionEyebrow">Current event</span>
+                        <h3>Event Annotation</h3>
+                    </div>
+                    <div class="rowActions">
+                        <button id="addSegmentButton" class="iconButton" type="button" title="Add event" aria-label="Add event">+</button>
+                        <button id="deleteSegmentButton" class="iconButton dangerIcon" type="button" title="Delete current event" aria-label="Delete current event">×</button>
+                    </div>
+                </div>
+
+                <label class="field fullField">
+                    <span>Current Event</span>
+                    <select id="segmentSelect"></select>
+                </label>
+                <label class="field fullField">
+                    <span>Label</span>
+                    <input id="segmentLabel" type="text" placeholder="Event action or state">
+                </label>
+                <div class="timeFieldGrid eventTimeGrid">
+                    <label class="field">
+                        <span>Start Time</span>
+                        <div class="inputAction">
+                            <input id="segmentStart" type="number" min="0" step="0.001">
+                            <button type="button" data-use-current="segmentStart" title="Use current frame time" aria-label="Use current frame time">◎</button>
+                        </div>
+                    </label>
+                    <label class="field">
+                        <span>End Time</span>
+                        <div class="inputAction">
+                            <input id="segmentEnd" type="number" min="0" step="0.001">
+                            <button type="button" data-use-current="segmentEnd" title="Use current frame time" aria-label="Use current frame time">◎</button>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="sectionDivider"></div>
+                <div class="subsectionHeader">
+                    <div>
+                        <span class="sectionEyebrow">Decision windows</span>
+                        <h4>Streaming Decision Windows</h4>
+                    </div>
+                </div>
+                <div class="windowEditor waitingEditor">
+                    <div class="windowName"><span class="windowSwatch waiting"></span><strong>Waiting</strong></div>
+                    <div class="timeFieldGrid">
+                        <label class="field">
+                            <span>Start</span>
+                            <div class="inputAction">
+                                <input id="waitingStart" type="number" min="0" step="0.001">
+                                <button type="button" data-use-current="waitingStart" title="Use current frame time" aria-label="Use current frame time">◎</button>
+                            </div>
+                        </label>
+                        <label class="field">
+                            <span>End</span>
+                            <div class="inputAction">
+                                <input id="waitingEnd" type="number" min="0" step="0.001">
+                                <button type="button" data-use-current="waitingEnd" title="Use current frame time" aria-label="Use current frame time">◎</button>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="timeFieldGrid frameFieldGrid">
+                        <label class="field">
+                            <span>Start Frame</span>
+                            <div class="inputAction">
+                                <input id="waitingStartFrame" type="number" min="0" step="1">
+                                <button type="button" data-use-current="waitingStartFrame" title="Use current frame" aria-label="Use current frame">◎</button>
+                            </div>
+                        </label>
+                        <label class="field">
+                            <span>End Frame</span>
+                            <div class="inputAction">
+                                <input id="waitingEndFrame" type="number" min="0" step="1">
+                                <button type="button" data-use-current="waitingEndFrame" title="Use current frame" aria-label="Use current frame">◎</button>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="windowEditor askingEditor">
+                    <div class="windowName"><span class="windowSwatch asking"></span><strong>Asking</strong></div>
+                    <div class="timeFieldGrid">
+                        <label class="field">
+                            <span>Start</span>
+                            <div class="inputAction">
+                                <input id="askingStart" type="number" min="0" step="0.001">
+                                <button type="button" data-use-current="askingStart" title="Use current frame time" aria-label="Use current frame time">◎</button>
+                            </div>
+                        </label>
+                        <label class="field">
+                            <span>End</span>
+                            <div class="inputAction">
+                                <input id="askingEnd" type="number" min="0" step="0.001">
+                                <button type="button" data-use-current="askingEnd" title="Use current frame time" aria-label="Use current frame time">◎</button>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="timeFieldGrid frameFieldGrid">
+                        <label class="field">
+                            <span>Start Frame</span>
+                            <div class="inputAction">
+                                <input id="askingStartFrame" type="number" min="0" step="1">
+                                <button type="button" data-use-current="askingStartFrame" title="Use current frame" aria-label="Use current frame">◎</button>
+                            </div>
+                        </label>
+                        <label class="field">
+                            <span>End Frame</span>
+                            <div class="inputAction">
+                                <input id="askingEndFrame" type="number" min="0" step="1">
+                                <button type="button" data-use-current="askingEndFrame" title="Use current frame" aria-label="Use current frame">◎</button>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="sectionDivider"></div>
+                <label class="field fullField">
+                    <span>Question</span>
+                    <textarea id="questionText" rows="3" placeholder="Question asked under the currently incomplete information"></textarea>
+                </label>
+
+                <div class="subsectionHeader correctEntityHeader">
+                    <div>
+                        <span class="sectionEyebrow">Gold entities · required</span>
+                        <h4>Correct Entities (multiple allowed)</h4>
+                    </div>
+                    <span class="requiredBadge">Required</span>
+                </div>
+                <div id="correctEntityList" class="correctEntityList" role="group" aria-label="Correct entities for current event"></div>
+                <div id="correctEntityEmptyState" class="inlineEmptyState">Register an entity on the Entities tab first</div>
+
+                <div class="subsectionHeader optionHeader">
+                    <div>
+                        <span class="sectionEyebrow">Model actions</span>
+                        <h4>Action Options</h4>
+                    </div>
+                    <button id="addActionOptionButton" class="button secondary smallButton" type="button"><span aria-hidden="true">+</span> Option</button>
+                </div>
+                <div id="actionOptionList" class="optionList"></div>
+
+                <div class="subsectionHeader optionHeader">
+                    <div>
+                        <span class="sectionEyebrow">Final answers</span>
+                        <h4>Answer Options</h4>
+                    </div>
+                    <button id="addAnswerOptionButton" class="button secondary smallButton" type="button"><span aria-hidden="true">+</span> Option</button>
+                </div>
+                <div id="answerOptionList" class="optionList"></div>
+            </div>
+
+            <div id="entitiesPanel" class="inspectorPanel" data-panel-content="entities">
+                <div class="panelTitleRow">
+                    <div>
+                        <span class="sectionEyebrow">Entity registry</span>
+                        <h3>Entity Registry</h3>
+                    </div>
+                    <button id="addEntityButton" class="button primary" type="button"><span aria-hidden="true">+</span> Register Entity</button>
+                </div>
+                <div id="entityList" class="entityList"></div>
+                <div id="entityEmptyState" class="emptyState">
+                    <strong>No entities yet</strong>
+                </div>
+            </div>
+
+            <div id="promptsPanel" class="inspectorPanel" data-panel-content="prompts">
+                <div class="panelTitleRow">
+                    <div>
+                        <span class="sectionEyebrow">SAM2 keyframes</span>
+                        <h3>Multi-frame Visual Prompts</h3>
+                    </div>
+                    <button id="deletePromptButton" class="iconButton dangerIcon" type="button" title="Delete selected visual prompt" aria-label="Delete selected visual prompt">×</button>
+                </div>
+                <div class="promptFilters">
+                    <select id="promptEntityFilter" aria-label="Filter keyframes by entity"></select>
+                    <select id="promptSegmentFilter" aria-label="Filter keyframes by event"></select>
+                </div>
+                <div id="promptList" class="promptList"></div>
+                <div id="promptEmptyState" class="emptyState">
+                    <strong>No keyframes yet</strong>
+                </div>
+            </div>
+
+            <div id="reviewPanel" class="inspectorPanel" data-panel-content="review">
+                <div class="panelTitleRow">
+                    <div>
+                        <span class="sectionEyebrow">Quality control</span>
+                        <h3>Annotation Integrity Check</h3>
+                    </div>
+                    <button id="runValidationButton" class="button primary" type="button">Run Check</button>
+                </div>
+                <div id="reviewSummary" class="reviewSummary"></div>
+                <div id="validationList" class="validationList"></div>
+            </div>
+        </aside>
+    </main>
+
+    <dialog id="entityDialog" class="entityDialog">
+        <form id="entityForm" method="dialog">
+            <div class="dialogHeader">
+                <div>
+                    <span class="sectionEyebrow">Entity registry</span>
+                    <h3 id="entityDialogTitle">Register Entity</h3>
+                </div>
+                <button id="closeEntityDialogButton" class="iconButton" type="button" aria-label="Close">×</button>
+            </div>
+            <input id="entityId" type="hidden">
+            <label class="field fullField">
+                <span>Entity Name</span>
+                <input id="entityName" type="text" required placeholder="For example: screwdriver with a green-and-black handle">
+            </label>
+            <label class="field fullField">
+                <span>Grounding Text</span>
+                <input id="entityGroundingText" type="text" placeholder="Text prompt for Grounding-DINO / Grounding-SAM2">
+            </label>
+            <label class="field fullField">
+                <span>Entity Description</span>
+                <textarea id="entityDescription" rows="3" placeholder="Appearance, location, identity, or distinguishing features"></textarea>
+            </label>
+            <fieldset class="colorFieldset">
+                <legend>Annotation Color</legend>
+                <div id="entityColorSwatches" class="colorSwatches"></div>
+            </fieldset>
+            <div class="dialogActions">
+                <button id="cancelEntityButton" class="button secondary" type="button">Cancel</button>
+                <button class="button primary" type="submit">Save Entity</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
