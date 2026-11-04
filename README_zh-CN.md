@@ -13,10 +13,10 @@
 </p>
 
 <p align="center">
-  <a href="YOUR_PAPER_URL"><img src="https://img.shields.io/badge/Paper-arXiv-B31B1B?style=flat-square&amp;logo=arxiv&amp;logoColor=white" alt="论文"></a>
-  <a href="YOUR_DATASET_URL"><img src="https://img.shields.io/badge/Dataset-Hugging%20Face-24292F?style=flat-square&amp;logo=huggingface&amp;logoColor=FFD21E" alt="数据集"></a>
-  <a href="YOUR_CODE_URL"><img src="https://img.shields.io/badge/Code-GitHub-24292F?style=flat-square&amp;logo=github&amp;logoColor=white" alt="代码"></a>
-  <a href="YOUR_PROJECT_URL"><img src="https://img.shields.io/badge/Project-Page-2563EB?style=flat-square&amp;logo=googlechrome&amp;logoColor=white" alt="项目主页"></a>
+  <a href="https://arxiv.org/abs/2610.38678"><img src="https://img.shields.io/badge/Paper-arXiv-B31B1B?style=flat-square&amp;logo=arxiv&amp;logoColor=white" alt="论文"></a>
+  <a href="https://huggingface.co/datasets/wanglucs/AskStream"><img src="https://img.shields.io/badge/Dataset-Hugging%20Face-24292F?style=flat-square&amp;logo=huggingface&amp;logoColor=FFD21E" alt="数据集"></a>
+  <a href="https://github.com/wanglu-cs/AskStream"><img src="https://img.shields.io/badge/Code-GitHub-24292F?style=flat-square&amp;logo=github&amp;logoColor=white" alt="代码"></a>
+  <a href="https://www.askstream.top"><img src="https://img.shields.io/badge/Project-Page-2563EB?style=flat-square&amp;logo=googlechrome&amp;logoColor=white" alt="项目主页"></a>
 </p>
 
 <p align="center">
